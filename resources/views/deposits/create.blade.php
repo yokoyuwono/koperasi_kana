@@ -246,7 +246,7 @@
                     <div class="pt-2 border-t border-slate-100 mt-2">
                         <label class="inline-flex items-start gap-2 cursor-pointer select-none">
                             <input type="hidden" name="BDP_ref" value="0">
-                            <input type="checkbox" name="BDP_ref" value="1"
+                            <input id="checkbox_bdp_ref" type="checkbox" name="BDP_ref" value="1"
                                 {{ old('BDP_ref') ? 'checked' : '' }}
                                 class="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                             <span class="text-[11px] text-slate-700">
@@ -318,6 +318,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const agentSelect = document.getElementById('id_agent');
     const rmSection   = document.getElementById('komisi-rm-section');
+    const checkBox = document.getElementById('checkbox_bdp_ref');
+
 
     if (!agentSelect || !rmSection) return;
 
@@ -329,12 +331,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (jabatan === 'BDP') {
             rmSection.classList.add('hidden');
-
+            checkBox.checked = true;
             // optional: clear input RM biar tidak terkirim
             rmSection.querySelectorAll('input, select, textarea').forEach(el => {
                 el.value = '';
             });
         } else {
+            checkBox.checked = false;
             rmSection.classList.remove('hidden');
         }
     }
@@ -405,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const nasabahEl = document.getElementById('select_nasabah');
-    const agentEl   = document.getElementById('id_agent ');
+    const agentEl   = document.getElementById('id_agent');
 
     if (nasabahEl) {
         new TomSelect(nasabahEl, {
