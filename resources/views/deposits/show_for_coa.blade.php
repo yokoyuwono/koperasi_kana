@@ -3,13 +3,13 @@
 @section('content')
 <div class="mb-4 flex flex-col gap-1">
     <div class="flex items-center gap-2">
-        <h2 class="text-xl font-semibold">Detail Deposito untuk Approval</h2>
+        <h2 class="text-xl font-semibold">Detail Pengajuan untuk Approval</h2>
         <span class="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-700">
             PENDING
         </span>
     </div>
     <p class="text-xs text-slate-500">
-        Periksa kembali detail deposito berikut. Anda dapat menyetujui atau menolak dengan memberikan alasan.
+        Periksa kembali detail pengajuan komisi berikut. Anda dapat menyetujui atau menolak dengan memberikan alasan.
     </p>
 </div>
 

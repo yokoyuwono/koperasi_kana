@@ -146,7 +146,7 @@ class KomisiReportController extends Controller
         ], null, 'A1');
 
         $sheet->fromArray([
-            ['Kode Agent','Nama Agent','Jabatan','Jumlah Deposit','Total Komisi','Approval Min','Approval Max']
+            ['Kode Agent','Nama Agent','Jabatan','Jumlah Deposit','Total Komisi','Tanggal Approval']
         ], null, 'A5');
 
         $data = [];
@@ -158,7 +158,6 @@ class KomisiReportController extends Controller
                 (int) $r->jumlah_deposit,
                 (float) $r->total_komisi,
                 $r->approval_min,
-                $r->approval_max,
             ];
         }
 

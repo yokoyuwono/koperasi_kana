@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="mb-4">
-    <h2 class="text-xl font-semibold">Approval Deposito (COA)</h2>
+    <h2 class="text-xl font-semibold">Approval Pengajuan komisi (COA)</h2>
     <p class="text-xs text-slate-500 mt-1">
-        Daftar deposito yang menunggu persetujuan Anda sebagai COA.
+        Daftar pengajuan komisi yang menunggu persetujuan Anda sebagai COA.
     </p>
 </div>
 
@@ -60,7 +60,7 @@
                 </div>
             </div>
         @empty
-            <p class="text-center text-xs text-slate-500 py-4">Tidak ada deposit pending.</p>
+            <p class="text-center text-xs text-slate-500 py-4">Tidak ada pengajuan yang pending.</p>
         @endforelse
     </div>
 
@@ -122,7 +122,7 @@
                 @empty
                     <tr>
                         <td colspan="7" class="px-4 py-6 text-center text-xs text-slate-500">
-                            Tidak ada deposit pending.
+                            Tidak ada pengajuan yang pending.
                         </td>
                     </tr>
                 @endforelse
@@ -133,7 +133,7 @@
     <div class="pt-2 border-t border-slate-100">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[11px] text-slate-500">
             <div>
-                Menampilkan {{ $deposits->count() }} dari {{ $deposits->total() }} deposit pending.
+                Menampilkan {{ $deposits->count() }} dari {{ $deposits->total() }} pengajuan pending.
             </div>
             <div class="text-xs">
                 {{ $deposits->links() }}

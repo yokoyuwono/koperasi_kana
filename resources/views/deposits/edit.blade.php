@@ -3,7 +3,7 @@
 @section('content')
 <div class="mb-4 flex flex-col gap-1">
     <div class="flex items-center gap-2">
-        <h2 class="text-xl font-semibold">Edit Deposito</h2>
+        <h2 class="text-xl font-semibold">Edit Pengajuan Komisi</h2>
         <span class="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold
             @switch($deposit->status)
                 @case('draft') bg-slate-100 text-slate-700 @break

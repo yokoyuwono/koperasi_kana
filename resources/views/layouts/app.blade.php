@@ -90,7 +90,7 @@
                         </a>
                         <a href="{{ route('deposits.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800 {{ request()->is('deposits*') ? 'bg-slate-800' : '' }}">
                             <span>💰</span>
-                            <span>Deposito</span>
+                            <span>Pengajuan Komisi</span>
                         </a>
                          <a href="{{ route('promosi.index') }}"
                         class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800 {{ request()->routeIs('promosi.*') ? 'bg-slate-800' : ''  }}">

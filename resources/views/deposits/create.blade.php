@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="mb-4">
-    <h2 class="text-xl font-semibold">Tambah Deposit</h2>
+    <h2 class="text-xl font-semibold">Pengajuan Komisi</h2>
     <p class="text-xs text-slate-500 mt-1">
-        Isi data deposito dengan teliti. Anda bisa menyimpan sebagai draft atau langsung kirim ke COA.
+        Isi data pengajuan komisi dengan teliti. Anda bisa menyimpan sebagai draft atau langsung kirim ke COA.
     </p>
 </div>
 
@@ -173,7 +173,7 @@
             <div class="border border-slate-200 rounded-xl p-4 bg-slate-50">
                 <h3 class="text-sm font-semibold text-slate-800 mb-2">Perhitungan Komisi Sistem</h3>
                 <p class="text-[11px] text-slate-500 mb-3">
-                    Sistem menghitung otomatis berdasarkan nominal deposito dan aturan standar.
+                    Sistem menghitung otomatis berdasarkan nominal deposit dan aturan standar.
                 </p>
 
                 <dl class="space-y-2 text-xs">

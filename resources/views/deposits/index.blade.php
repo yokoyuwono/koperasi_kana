@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="mb-4">
-    <h2 class="text-xl font-semibold">Daftar Deposito</h2>
+    <h2 class="text-xl font-semibold">Pengajuan Komisi</h2>
     <p class="text-xs text-slate-500 mt-1">
-        Ringkasan seluruh deposito nasabah beserta status persetujuannya.
+        Ringkasan seluruh pengajuan komisi.
     </p>
 </div>
 
@@ -34,7 +34,7 @@
         @if(auth()->user()->role === 'admin')
             <a href="{{ route('deposits.create') }}"
                class="inline-flex items-center justify-center gap-1 px-3 py-2 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700">
-                + Tambah Deposit
+                + Tambah Pengajuan
             </a>
         @endif
     </div>
@@ -108,7 +108,7 @@
                 @endif
             </div>
         @empty
-            <p class="text-center text-xs text-slate-500 py-4">Belum ada data deposit.</p>
+            <p class="text-center text-xs text-slate-500 py-4">Belum ada data pengajuan.</p>
         @endforelse
     </div>
 
@@ -234,7 +234,7 @@
                 @empty
                     <tr>
                         <td colspan="8" class="px-4 py-6 text-center text-xs text-slate-500">
-                            Belum ada data deposit.
+                            Belum ada data.
                         </td>
                     </tr>
                 @endforelse
