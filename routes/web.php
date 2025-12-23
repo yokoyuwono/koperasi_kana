@@ -160,7 +160,7 @@ Route::middleware('auth')->group(function () {
         // Laporan komisi admin
         Route::get('/komisi-report', [KomisiReportController::class, 'index'])->name('komisi.report');
         Route::get('/komisi-report/export', [KomisiReportController::class, 'export'])->name('komisi.report.export');
-        Route::post('/komisi-report/pay', [KomisiReportController::class, 'pay'])->name('komisi.report.pay');
+        Route::post('/komisi-report/pay', [KomisiReportController::class, 'pay'])->name('komisi.report.pay');1
         
         // PROMOSI AGENT (admin)
         Route::get('promosi-agent', [PromosiAgentController::class, 'adminIndex'])->name('promosi.index');

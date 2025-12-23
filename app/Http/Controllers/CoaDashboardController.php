@@ -27,7 +27,7 @@ class CoaDashboardController extends Controller
         $promosiPendingCount = PromosiAgent::where('status', 'pending')->count();
 
         // Komisi "butuh tindakan" (contoh: approved tapi belum dibayar)
-        $komisiUnpaidCount = Komisi::where('status', 'approved')
+        $komisiUnpaidCount = Komisi::where('status', operator: 'approved')
             ->whereNull('tanggal_pembayaran')
             ->count();
 

@@ -101,11 +101,11 @@
                     </div>
                 </div>
 
-                @if(!empty($deposit->catatan_admin))
+                <!-- @if(!empty($deposit->catatan_admin))
                     <div class="mt-3 text-xs text-slate-700">
                     <span class="font-semibold">Catatan Admin:</span> {{ $deposit->catatan_admin }}
                     </div>
-                @endif
+                @endif -->
                 </div>
             </div>
             </div>
@@ -136,6 +136,17 @@
                     </div>
                 </div>
                 </div>
+
+                @if(!empty($deposit->catatan_admin))
+                    <div class="border border-slate-200 rounded-xl p-4 bg-white">
+                        <div class="text-xs font-semibold text-slate-800">Catatan Admin</div>
+                        <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">
+                            {{ $deposit->catatan_admin }}
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Form komisi final COA --}}
 
                 {{-- Komisi Final COA --}}
                 <div class="border border-blue-200 rounded-xl p-4 bg-blue-50">
