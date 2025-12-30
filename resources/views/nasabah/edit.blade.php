@@ -30,13 +30,11 @@
         <div>
             <h3 class="text-sm font-semibold text-slate-700 mb-3">Data Utama</h3>
             <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">
-                        Kode Nasabah <span class="text-red-500">*</span>
-                    </label>
-                    <input name="kode_nasabah" value="{{ old('kode_nasabah', $nasabah->kode_nasabah) }}" 
+               <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">NIK<span class="text-red-500">*</span></label>
+                    <input name="NIK" value="{{ old('NIK', $nasabah->NIK) }}"
                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                    @error('kode_nasabah') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    @error('NIK') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
@@ -106,11 +104,6 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-4 mt-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">NIK</label>
-                    <input name="NIK" value="{{ old('NIK', $nasabah->NIK) }}"
-                           class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">NPWP</label>
                     <input name="NPWP" value="{{ old('NPWP', $nasabah->NPWP) }}"

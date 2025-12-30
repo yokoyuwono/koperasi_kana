@@ -86,12 +86,5 @@
       </div>
     </div>
   </div>
-
-  <div class="pt-2">
-    <a href="{{ route('user.komisi') }}"
-       class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-slate-800 text-white text-xs hover:bg-slate-900">
-      Lihat Komisi
-    </a>
-  </div>
 </div>
 @endsection

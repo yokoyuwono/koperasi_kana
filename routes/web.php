@@ -8,6 +8,9 @@ use App\Http\Controllers\PromosiAgentController;
 use App\Http\Controllers\CoaDashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\KomisiReportController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\AgentCommissionReportController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
@@ -122,6 +125,7 @@ Route::middleware('auth')->group(function () {
         $role = strtolower(trim((string) auth()->user()->role));
 
         return match ($role) {
+            'superadmin' => redirect()->route('superadmin.dashboard'),
             'admin' => redirect()->route('admin.dashboard'),
             'coa'   => redirect()->route('coa.dashboard'),
             'rm', 'bdp' => redirect()->route('user.dashboard'),
@@ -135,7 +139,20 @@ Route::middleware('auth')->group(function () {
     // =========================
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    Route::middleware(['auth', 'role:superadmin'])->group(function () {
+        Route::get('/superadmin/dashboard', [App\Http\Controllers\SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
 
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])
+            ->name('users.resetPassword');
+
+        // Riwayat Aktifitas (Moved from Admin)
+        Route::get('/activity-logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('admin.activity_logs');
+    });
     // =========================
     // USER (RM/BDP) - read only
     // =========================
@@ -161,6 +178,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/komisi-report', [KomisiReportController::class, 'index'])->name('komisi.report');
         Route::get('/komisi-report/export', [KomisiReportController::class, 'export'])->name('komisi.report.export');
         Route::post('/komisi-report/pay', [KomisiReportController::class, 'pay'])->name('komisi.report.pay');
+
+        // Laporan Komisi PER AGENT
+        Route::get('/agent-commission-report', [AgentCommissionReportController::class, 'index'])->name('agent.komisi.report');
+        Route::get('/agent-commission-report/{agent}', [AgentCommissionReportController::class, 'show'])->name('agent.komisi.report.show');
+
         
         // PROMOSI AGENT (admin)
         Route::get('promosi-agent', [PromosiAgentController::class, 'adminIndex'])->name('promosi.index');
@@ -168,6 +190,7 @@ Route::middleware('auth')->group(function () {
         Route::post('promosi-agent', [PromosiAgentController::class, 'store'])->name('promosi.store');
         Route::get('promosi-agent/{promosi}/edit', [PromosiAgentController::class, 'edit'])->name('promosi.edit');
         Route::put('promosi-agent/{promosi}', [PromosiAgentController::class, 'update'])->name('promosi.update');
+
     });
 
 
@@ -197,6 +220,8 @@ Route::middleware('auth')->group(function () {
         Route::get('promosi-agent/{promosi}', [PromosiAgentController::class, 'coaShow'])->name('promosi.show');
         Route::post('promosi-agent/{promosi}/approve', [PromosiAgentController::class, 'approve'])->name('promosi.approve');
         Route::post('promosi-agent/{promosi}/reject', [PromosiAgentController::class, 'reject'])->name('promosi.reject');
+        Route::post('deposits/{deposit}/update-approved', [DepositController::class, 'coaUpdateApproved'])->name('deposits.updateApproved');
+
     });
 
 });

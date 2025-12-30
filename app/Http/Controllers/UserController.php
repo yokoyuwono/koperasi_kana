@@ -90,7 +90,7 @@ class UserController extends Controller
         return view('user.dashboard', compact('agent', 'stats', 'latestNasabah', 'latestDeposit'));
     }
 
-    public function komisi(Request $request)
+   public function komisi(Request $request)
     {
         $user = auth()->user();
         abort_unless($user && $user->id_agent, 403, 'User tidak terhubung ke Agent.');
@@ -98,49 +98,84 @@ class UserController extends Controller
         $agent = Agent::findOrFail($user->id_agent);
         $this->ensureRmOrBdp($user, $agent);
 
-        $role = strtoupper($agent->role);
+        $role = strtoupper($agent->jabatan); // RM / BDP
 
+        // filter komisi
         $qStatus = $request->get('status', 'all'); // all|approved|paid
-        $qBulan = $request->get('bulan');          // YYYY-MM (opsional)
+        $qBulan  = $request->get('bulan');         // YYYY-MM (opsional)
 
         // scope agent yang boleh dilihat
         $allowedAgentIds = collect([$agent->id]);
 
-        if ($role === 'bdp') {
+        if ($role === 'BDP') {
             $rmIds = Agent::where('atasan_id', $agent->id)
-                ->where('role', 'role')
+                ->where('jabatan', 'RM')
                 ->pluck('id');
 
             $allowedAgentIds = $allowedAgentIds->merge($rmIds)->unique()->values();
         }
 
-        $query = Komisi::query()
+        // =====================
+        // 1) LIST KOMISI (yang sudah ada)
+        // =====================
+        $komisiQuery = Komisi::query()
             ->whereIn('id_agent', $allowedAgentIds)
             ->orderByDesc('tanggal_periode')
             ->orderByDesc('id');
 
-        if (in_array($qStatus, ['approved', 'paid'])) {
-            $query->where('status', $qStatus);
+        if (in_array($qStatus, ['approved', 'paid'], true)) {
+            $komisiQuery->where('status', $qStatus);
         }
 
         if ($qBulan) {
-            // filter berdasarkan tanggal_periode (YYYY-MM)
-            $start = $qBulan . '-01';
-            $end = date('Y-m-t', strtotime($start));
-            $query->whereBetween('tanggal_periode', [$start, $end]);
+            $komisiQuery->whereRaw("DATE_FORMAT(tanggal_periode, '%Y-%m') = ?", [$qBulan]);
         }
 
-        // biar tampil nama agent
-        $query->with(['agent:id,nama,jabatan']);
+        // tampil nama agent di card komisi
+        $komisiQuery->with(['agent:id,nama,jabatan']);
 
-        $rows = $query->paginate(20)->withQueryString();
+        $rows = $komisiQuery->paginate(20)->withQueryString();
 
-        $sumApproved = (clone $query)->cloneWithout(['orders', 'limit', 'offset'])
+        $sumApproved = (clone $komisiQuery)->cloneWithout(['orders', 'limit', 'offset'])
             ->where('status', 'approved')->sum('nominal');
 
-        $sumPaid = (clone $query)->cloneWithout(['orders', 'limit', 'offset'])
+        $sumPaid = (clone $komisiQuery)->cloneWithout(['orders', 'limit', 'offset'])
             ->where('status', 'paid')->sum('nominal');
 
-        return view('user.komisi', compact('agent', 'rows', 'qStatus', 'qBulan', 'sumApproved', 'sumPaid'));
+        // =====================
+        // 2) LIST PENGAJUAN DEPOSIT (BARU)
+        // =====================
+        $dStatus = $request->get('d_status', 'all'); // all|pending|approved|rejected
+
+        $depositQuery = Deposit::query()
+            ->whereIn('id_agent', $allowedAgentIds)
+            ->with([
+                'nasabah:id,kode_nasabah,nama',
+                'agent:id,kode_agent,nama,jabatan',
+            ])
+            ->orderByDesc('id');
+
+        // filter bulan sama (mengacu ke tanggal_mulai)
+        if ($qBulan) {
+            $depositQuery->whereRaw("DATE_FORMAT(tanggal_mulai, '%Y-%m') = ?", [$qBulan]);
+        }
+
+        if (in_array($dStatus, ['pending', 'approved', 'rejected'], true)) {
+            $depositQuery->where('status', $dStatus);
+        }
+
+        // paginator TERPISAH supaya tidak bentrok dengan pagination komisi
+        $depositRows = $depositQuery->paginate(10, ['*'], 'deposits_page')->withQueryString();
+
+        return view('user.komisi', compact(
+            'agent',
+            'rows',
+            'qStatus',
+            'qBulan',
+            'sumApproved',
+            'sumPaid',
+            'depositRows',
+            'dStatus'
+        ));
     }
 }

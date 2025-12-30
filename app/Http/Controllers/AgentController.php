@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
+use App\Support\Audit;
 use Illuminate\Http\Request;
 
 class AgentController extends Controller
@@ -131,8 +132,17 @@ class AgentController extends Controller
             $data['tanggal_daftar'] = now()->toDateString();
         }
 
-        Agent::create($data);
+        // Agent::create($data);
 
+        $agent = Agent::create($data);
+        Audit::agent(
+            $agent->id,
+            'create',
+            null,
+            $agent->fresh()->toArray(),
+            'Admin membuat agent',
+            auth()->id()
+        );
         return redirect()->route('agents.index')
             ->with('success', 'Agen berhasil ditambahkan.');
     }
@@ -195,20 +205,28 @@ class AgentController extends Controller
             }
             $data['refferred_by_agent_id'] = null;
         }
-        
+        $oldAgent = $agent->toArray();
         $agent->update($data);
+        Audit::agent(
+            $agent->id,
+            'update',
+            $oldAgent,
+            $agent->fresh()->toArray(),
+            'Admin mengubah agent',
+            auth()->id()
+        );
 
         return redirect()->route('agents.index')
             ->with('success', 'Agen berhasil diperbarui.');
     }
 
-    public function destroy(Agent $agent)
-    {
-        $this->ensureAdmin();
+    // public function destroy(Agent $agent)
+    // {
+    //     $this->ensureAdmin();
 
-        $agent->delete();
+    //     $agent->delete();
 
-        return redirect()->route('agents.index')
-            ->with('success', 'Agen berhasil dihapus.');
-    }
+    //     return redirect()->route('agents.index')
+    //         ->with('success', 'Agen berhasil dihapus.');
+    // }
 }

@@ -29,7 +29,7 @@
                     KANA Admin
                 </div>
                 <div class="text-xs text-slate-400 mt-1">
-                    Deposito & Agen Management
+                    Komisi & Agent Management
                 </div>
             </div>
 
@@ -45,6 +45,24 @@
                         <span>Komisi</span>
                     </a>
                 @else
+                    @if(auth()->user()->role === 'superadmin')
+                        <a href="{{ route('superadmin.dashboard') }}"
+                           class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800 {{ request()->routeIs('superadmin.dashboard') ? 'bg-slate-800' : '' }}">
+                            <span>🚀</span>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{{ route('users.index') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
+                                {{ request()->routeIs('users.*') ? 'bg-slate-800' : '' }}">
+                            <span>🧑‍💻</span><span>Master User</span>
+                        </a>
+                        <a href="{{ route('admin.activity_logs') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
+                                {{ request()->routeIs('admin.activity_logs*') ? 'bg-slate-800' : '' }}">
+                            <span>📜</span><span>Riwayat Aktifitas</span>
+                        </a>
+                    @endif
+
                     @if(auth()->user()->role === 'coa')
                         <a href="{{ route('coa.dashboard') }}"
                         class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
@@ -63,7 +81,7 @@
                         </a>
                         <a href="{{ route('coa.deposits.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800 {{ request()->is('deposits*') ? 'bg-slate-800' : '' }}">
                             <span>💰</span>
-                            <span>Deposito</span>
+                            <span>Pengajuan Komisi</span>
                         </a>
                         <a href="{{ route('coa.promosi.index') }}"
                         class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
@@ -102,6 +120,12 @@
                                 {{ request()->routeIs('komisi.report*') ? 'bg-slate-800' : '' }}">
                             <span>📊</span>
                             <span>Laporan Komisi</span>
+                        </a>
+                        <a href="{{ route('agent.komisi.report') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
+                                {{ request()->routeIs('agent.komisi.report*') ? 'bg-slate-800' : '' }}">
+                            <span>📈</span>
+                            <span>Laporan Per Agent</span>
                         </a>
                     @endif
                 @endif
@@ -149,6 +173,18 @@
                             <span>🏠</span>
                             <span>Dashboard</span>
                         </a>
+                        <a href="{{ route('agent.komisi.report') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
+                                {{ request()->routeIs('agent.komisi.report*') ? 'bg-slate-800' : '' }}">
+                            <span>📈</span>
+                            <span>Laporan Per Agent</span>
+                        </a>
+                        <a href="{{ route('admin.activity_logs') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800
+                                {{ request()->is('activity-logs*') ? 'bg-slate-800' : '' }}"
+                        onclick="toggleSidebar()">
+                            <span>📜</span><span>Riwayat Aktifitas</span>
+                        </a>
                     @endif
                     <a href="{{ route('agents.index') }}"
                        class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800 {{ request()->is('agents*') ? 'bg-slate-800' : '' }}"
@@ -164,7 +200,7 @@
                     <div>
                         <a href="{{ route('deposits.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-800 {{ request()->is('deposits*') ? 'bg-slate-800' : '' }}">
                         <span>💰</span>
-                        <span>Deposito</span>
+                        <span>Pengajuan Komisi</span>
                     </a>
                     </div>
                     <div>

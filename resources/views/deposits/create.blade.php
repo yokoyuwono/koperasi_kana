@@ -4,7 +4,7 @@
 <div class="mb-4">
     <h2 class="text-xl font-semibold">Pengajuan Komisi</h2>
     <p class="text-xs text-slate-500 mt-1">
-        Isi data pengajuan komisi dengan teliti. Anda bisa menyimpan sebagai draft atau langsung kirim ke COA.
+        Isi data pengajuan dengan teliti. Anda bisa menyimpan sebagai draft atau langsung kirim ke COA.
     </p>
 </div>
 
@@ -33,26 +33,16 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-700 mb-1">Agen Penanggung Jawab <span class="text-red-500">*</span></label>
-                    <!-- <select id="select_agent" name="id_agent"
+
+                    <select id="select_agent" name="id_agent"
                             class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white">
                         <option value="">- Pilih Agen -</option>
                         @foreach($agents as $a)
-                            <option value="{{ $a->id }}" data-jabatan="{{ $a->jabatan }}" {{ old(key: 'id_agent') == $a->id ? 'selected' : '' }}>
+                            <option value="{{ $a->id }}" data-jabatan="{{ $a->jabatan }}" {{ old('id_agent') == $a->id ? 'selected' : '' }}>
                                 {{ $a->kode_agent }} - {{ $a->nama }} ({{ $a->jabatan }})
                             </option>
                         @endforeach
-                    </select> -->
-                    <select id="id_agent" id="select_agent" name="id_agent"
-                        class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-white">
-                    <option value="">- Pilih Agen -</option>
-                    @foreach($agents as $a)
-                        <option value="{{ $a->id }}"
-                            data-jabatan="{{ $a->jabatan }}"
-                            {{ old('id_agent') == $a->id ? 'selected' : '' }}>
-                            {{ $a->kode_agent }} - {{ $a->nama }} ({{ $a->jabatan }})
-                        </option>
-                    @endforeach
-                </select>
+                    </select>
 
                     @error('id_agent') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -150,20 +140,7 @@
                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                     @error('nominal') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-                {{-- <div class="md:col-span-2 flex items-start gap-2">
-                    <input type="hidden" name="BDP_ref" value="0">
-                    <label class="inline-flex items-start gap-2 cursor-pointer select-none mt-5 md:mt-6">
-                        <input type="checkbox" name="BDP_ref" value="1"
-                            {{ old('BDP_ref') ? 'checked' : '' }}
-                            class="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                        <span class="text-xs text-slate-700">
-                            Ada BDP Referral (tambahan komisi <span class="font-semibold">0,5%</span> untuk BDP yang mereferensikan).
-                            <span class="block text-[11px] text-slate-400">
-                                Centang jika deposito ini berasal dari referensi BDP lain.
-                            </span>
-                        </span>
-                    </label>
-                </div> --}}
+
             </div>
         </div>
 
@@ -173,7 +150,7 @@
             <div class="border border-slate-200 rounded-xl p-4 bg-slate-50">
                 <h3 class="text-sm font-semibold text-slate-800 mb-2">Perhitungan Komisi Sistem</h3>
                 <p class="text-[11px] text-slate-500 mb-3">
-                    Sistem menghitung otomatis berdasarkan nominal deposit dan aturan standar.
+                    Sistem menghitung otomatis berdasarkan nominal dan aturan standar.
                 </p>
 
                 <dl class="space-y-2 text-xs">
@@ -207,14 +184,14 @@
                     Admin dapat menyesuaikan % komisi sesuai kebijakan. Default mengikuti komisi sistem.
                 </p>
 
-                <div  class="space-y-3">
+                <div class="space-y-3">
                     {{-- Komisi RM Final --}}
-                    <div id="komisi-rm-section">
+                    <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">
                             % Komisi RM Final
                         </label>
                         <div class="flex items-center gap-2">
-                            <input type="number" step="0.1" min="0"
+                            <input type="number" step="0.1" 
                                 name="komisi_rm_persen_final"
                                 value="{{ old('komisi_rm_persen_final') }}"
                                 class="w-24 border border-slate-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
@@ -231,7 +208,7 @@
                             % Komisi BDP Final
                         </label>
                         <div class="flex items-center gap-2">
-                            <input type="number" step="0.1" min="0"
+                            <input type="number" step="0.1"
                                 name="komisi_bdp_persen_final"
                                 value="{{ old('komisi_bdp_persen_final') }}"
                                 class="w-24 border border-slate-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
@@ -243,16 +220,50 @@
                     </div>
 
                     {{-- Toggle BDP Referral (pakai checkbox BDP_ref yang sudah ada) --}}
-                    <div class="pt-2 border-t border-slate-100 mt-2">
+                    <!-- <div class="pt-2 border-t border-slate-100 mt-2">
                         <label class="inline-flex items-start gap-2 cursor-pointer select-none">
                             <input type="hidden" name="BDP_ref" value="0">
-                            <input id="checkbox_bdp_ref" type="checkbox" name="BDP_ref" value="1"
+                            <input type="checkbox" name="BDP_ref" value="1"
                                 {{ old('BDP_ref') ? 'checked' : '' }}
                                 class="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                             <span class="text-[11px] text-slate-700">
                                 Aktifkan komisi BDP referral (tambahan 0,5% untuk BDP yang mereferensikan).
                             </span>
                         </label>
+                    </div> -->
+                    <div class="md:col-span-2" id="bdpRefWrapper">
+                        <input type="hidden" name="BDP_ref" value="0">
+                        <label class="inline-flex items-start gap-2 cursor-pointer select-none">
+                            <input id="bdp_ref_toggle" type="checkbox" name="BDP_ref" value="1"
+                                {{ old('BDP_ref', $deposit->BDP_ref ?? false) ? 'checked' : '' }}
+                                class="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                            <div class="text-xs">
+                                <div class="font-medium text-slate-700">BDP Ref</div>
+                                <div class="text-[11px] text-slate-500">Aktifkan komisi referral BDP (sesuai aturan default). Bisa diubah.</div>
+                            </div>
+                        </label>
+
+                        <div id="bdpRefSection" class="mt-3 hidden rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">% Komisi BDP Ref</label>
+                                    <input id="bdp_ref_percent" type="number" step="0.01" min="0" name="komisi_bdp_ref_persen_final"
+                                        value="{{ old('komisi_bdp_ref_persen_final', $bdpRefPercent ?? '') }}"
+                                        class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                                    @error('komisi_bdp_ref_persen_final') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-700 mb-1">Nominal Komisi BDP Ref</label>
+                                    <input id="bdp_ref_nominal" type="text" readonly
+                                        class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50">
+                                </div>
+
+                                <div class="text-[11px] text-slate-500">
+                                    Sistem menghitung otomatis berdasarkan nominal & tenor (prorata).
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -275,16 +286,16 @@
                     <input type="file" name="bukti_transfer" accept="image/*"
                         class="block w-full text-xs text-slate-700 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-lg cursor-pointer">
                     <p class="text-[11px] text-slate-400 mt-1">
-                        Format: JPG/PNG, maks 2MB. Disimpan sebagai path file di server.
+                        Format: JPG/PNG, maks 2MB
                     </p>
                     @error('bukti_transfer') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Dokumen Pendukung (gambar)</label>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Dokumen Bukti Special Rate</label>
                     <input type="file" name="dokumen_pendukung" accept="image/*"
                         class="block w-full text-xs text-slate-700 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-lg cursor-pointer">
                     <p class="text-[11px] text-slate-400 mt-1">
-                        Misalnya foto formulir, KTP, atau dokumen lain (opsional).
+                        Format: JPG/PNG, maks 2MB
                     </p>
                     @error('dokumen_pendukung') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -313,42 +324,6 @@
     </form>
 </div>
 @endsection
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const agentSelect = document.getElementById('id_agent');
-    const rmSection   = document.getElementById('komisi-rm-section');
-    const checkBox = document.getElementById('checkbox_bdp_ref');
-
-
-    if (!agentSelect || !rmSection) return;
-
-    function toggleKomisiRM() {
-        const opt = agentSelect.options[agentSelect.selectedIndex];
-        if (!opt) return;
-
-        const jabatan = opt.getAttribute('data-jabatan');
-
-        if (jabatan === 'BDP') {
-            rmSection.classList.add('hidden');
-            checkBox.checked = true;
-            // optional: clear input RM biar tidak terkirim
-            rmSection.querySelectorAll('input, select, textarea').forEach(el => {
-                el.value = '';
-            });
-        } else {
-            checkBox.checked = false;
-            rmSection.classList.remove('hidden');
-        }
-    }
-
-    agentSelect.addEventListener('change', toggleKomisiRM);
-
-    // initial run (penting untuk edit)
-    toggleKomisiRM();
-});
-</script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tenorEl = document.getElementById('tenor');
@@ -408,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const nasabahEl = document.getElementById('select_nasabah');
-    const agentEl   = document.getElementById('id_agent');
+    const agentEl   = document.getElementById('select_agent');
 
     if (nasabahEl) {
         new TomSelect(nasabahEl, {
@@ -430,90 +405,225 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <script>
-    
-    function formatRupiah(number) {
-        if (!number || isNaN(number)) return 'Rp 0';
-        return 'Rp ' + Number(number).toLocaleString('id-ID', { maximumFractionDigits: 0 });
+
+window.KOMISI_DEFAULTS = @json($komisiDefaults);
+
+function formatRupiah(number) {
+    if (!number || isNaN(number)) return 'Rp 0';
+    return 'Rp ' + Number(number).toLocaleString('id-ID', { maximumFractionDigits: 0 });
+}
+
+function round2(n) {
+    const x = Number(n);
+    if (isNaN(x)) return 0;
+    return Math.round(x * 100) / 100;
+}
+
+// prorata dari annual rate (basis 12 bulan)
+function prorataPercent(annualRate, tenor) {
+    const a = Number(annualRate) || 0;
+    const t = Number(tenor) || 0;
+    return round2((a / 12) * t);
+}
+
+function findDefault(pengaju, jenis, nominal) {
+    const rows = window.KOMISI_DEFAULTS || [];
+    const n = Number(nominal) || 0;
+
+    let best = null;
+    for (const r of rows) {
+        if (!r || !r.aktif) continue;
+        if ((String(r.pengaju_jabatan || '')).toUpperCase() !== pengaju) continue;
+        if ((String(r.jenis_komisi || '')).toUpperCase() !== jenis) continue;
+
+        const min = Number(r.nominal_min ?? 0);
+        const max = (r.nominal_max === null || r.nominal_max === undefined) ? null : Number(r.nominal_max);
+
+        if (n < min) continue;
+        if (max !== null && n > max) continue;
+
+        if (!best || min > Number(best.nominal_min ?? 0)) best = r;
+    }
+    return best;
+}
+
+function getSystemFromDb(jabatan, nominal, tenor) {
+    const pengaju = (jabatan || '').toUpperCase();
+
+    const rmRow  = findDefault(pengaju, 'RM', nominal);
+    const bdpRow = findDefault(pengaju, 'BDP', nominal);
+    const refRow = findDefault(pengaju, 'BDP_REF', nominal);
+
+    const annualRm  = rmRow ? Number(rmRow.annual_rate || 0) : 0;
+    const annualBdp = bdpRow ? Number(bdpRow.annual_rate || 0) : 0;
+    const annualRef = refRow ? Number(refRow.annual_rate || 0) : 0;
+
+    const rmEligible = annualRm > 0.0001;
+
+    const refMode = refRow ? (refRow.ref_mode || 'none') : 'none'; // none|optional|mandatory
+
+    return {
+        rm: rmEligible ? prorataPercent(annualRm, tenor) : null,
+        bdp: annualBdp > 0 ? prorataPercent(annualBdp, tenor) : null,
+        bdp_ref: annualRef > 0 ? prorataPercent(annualRef, tenor) : null,
+        ref_mode: refMode,
+        rmEligible,
+    };
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const nominalEl = document.querySelector('input[name="nominal"]');
+    const agentEl   = document.getElementById('select_agent');
+    const tenorSelectEl   = document.getElementById('tenor');
+
+    const rmFinalInput  = document.querySelector('input[name="komisi_rm_persen_final"]');
+    const bdpFinalInput = document.querySelector('input[name="komisi_bdp_persen_final"]');
+
+    const bdpRefToggle  = document.getElementById('bdp_ref_toggle');
+    const bdpRefSection = document.getElementById('bdpRefSection');
+    const bdpRefWrapper = document.getElementById('bdpRefWrapper');
+    const bdpRefInput   = document.querySelector('input[name="komisi_bdp_ref_persen_final"]');
+    const bdpRefNominal = document.getElementById('bdp_ref_nominal');
+
+    if (!nominalEl || !agentEl || !tenorSelectEl) return;
+
+    function selectedJabatan() {
+        const opt = agentEl.options[agentEl.selectedIndex];
+        return (opt && opt.dataset && opt.dataset.jabatan) ? opt.dataset.jabatan : '';
     }
 
-    function hitungPersenSystem(nominal) {
-        // aturan: < 200jt → RM 3%, BDP 4% ; >= 200jt → RM 4%, BDP 5%
-        if (nominal < 200000000) {
-            return { rm: 3.0, bdp: 4.0 };
-        }
-        return { rm: 4.0, bdp: 5.0 };
+    function setWarning(show) {
+        const el = document.getElementById('komisi-warning');
+        if (!el) return;
+        el.classList.toggle('hidden', !show);
     }
 
-    function recalcKomisiPanel() {
-        const nominalInput   = document.querySelector('input[name="nominal"]');
-        const rmFinalInput   = document.querySelector('input[name="komisi_rm_persen_final"]');
-        const bdpFinalInput  = document.querySelector('input[name="komisi_bdp_persen_final"]');
+    function refresh() {
+        const nominal = parseFloat(nominalEl.value || '0') || 0;
+        const tenor   = parseInt(tenorSelectEl.value || '0', 10) || 0;
+        const jabatan = selectedJabatan();
 
-        if (!nominalInput || !rmFinalInput || !bdpFinalInput) return;
+        const sys = getSystemFromDb(jabatan, nominal, tenor);
 
-        const nominal = parseFloat(nominalInput.value || '0');
-
-        // Hitung % sistem
-        const sistem = hitungPersenSystem(nominal);
-        const rmSystemPercent  = sistem.rm;
-        const bdpSystemPercent = sistem.bdp;
-
-        // Set tampilan komisi sistem
-        document.getElementById('komisi-system-rm-percent').textContent  = rmSystemPercent.toFixed(1) + '%';
-        document.getElementById('komisi-system-bdp-percent').textContent = bdpSystemPercent.toFixed(1) + '%';
-
-        const rmSystemNominal  = nominal * rmSystemPercent / 100;
-        const bdpSystemNominal = nominal * bdpSystemPercent / 100;
-
-        document.getElementById('komisi-system-rm-nominal').textContent  = formatRupiah(rmSystemNominal);
-        document.getElementById('komisi-system-bdp-nominal').textContent = formatRupiah(bdpSystemNominal);
-
-        // Jika input final masih kosong, default-kan ke nilai sistem
-        if (rmFinalInput.value === '' && nominal > 0) {
-            rmFinalInput.value = rmSystemPercent.toFixed(1);
-        }
-        if (bdpFinalInput.value === '' && nominal > 0) {
-            bdpFinalInput.value = bdpSystemPercent.toFixed(1);
-        }
-
-        const rmFinalPercent  = parseFloat(rmFinalInput.value || '0');
-        const bdpFinalPercent = parseFloat(bdpFinalInput.value || '0');
-
-        const rmFinalNominal  = nominal * rmFinalPercent / 100;
-        const bdpFinalNominal = nominal * bdpFinalPercent / 100;
-
-        document.getElementById('komisi-final-rm-nominal').textContent  = formatRupiah(rmFinalNominal);
-        document.getElementById('komisi-final-bdp-nominal').textContent = formatRupiah(bdpFinalNominal);
-
-        // Tampilkan warning jika % final ≠ % sistem
-        const warningBox = document.getElementById('komisi-warning');
-        if (
-            nominal > 0 &&
-            (rmFinalPercent.toFixed(1) !== rmSystemPercent.toFixed(1) ||
-             bdpFinalPercent.toFixed(1) !== bdpSystemPercent.toFixed(1))
-        ) {
-            warningBox.classList.remove('hidden');
-        } else {
-            warningBox.classList.add('hidden');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const nominalInput  = document.querySelector('input[name="nominal"]');
-        const rmFinalInput  = document.querySelector('input[name="komisi_rm_persen_final"]');
-        const bdpFinalInput = document.querySelector('input[name="komisi_bdp_persen_final"]');
-
-        if (nominalInput) {
-            nominalInput.addEventListener('input', recalcKomisiPanel);
-        }
+        // ====== SHOW/HIDE RM FINAL INPUT (BDP pengaju = tidak dapat RM) ======
         if (rmFinalInput) {
-            rmFinalInput.addEventListener('input', recalcKomisiPanel);
-        }
-        if (bdpFinalInput) {
-            bdpFinalInput.addEventListener('input', recalcKomisiPanel);
+            const rmWrap = rmFinalInput.closest('div'); // aman untuk layout kamu
+            if (rmWrap) rmWrap.classList.toggle('hidden', !sys.rmEligible);
+            if (!sys.rmEligible) rmFinalInput.value = ''; // kirim null
         }
 
-        // Hitung pertama kali saat halaman load
-        recalcKomisiPanel();
+        // ====== System percent display ======
+        const rmSysPct  = sys.rmEligible ? (sys.rm ?? 0) : 0;
+        const bdpSysPct = sys.bdp ?? 0;
+
+        const elRmSysPct = document.getElementById('komisi-system-rm-percent');
+        const elBdpSysPct = document.getElementById('komisi-system-bdp-percent');
+        const elRmSysNom = document.getElementById('komisi-system-rm-nominal');
+        const elBdpSysNom = document.getElementById('komisi-system-bdp-nominal');
+
+        if (elRmSysPct)  elRmSysPct.textContent  = sys.rmEligible ? (rmSysPct.toFixed(2) + '%') : '-';
+        if (elBdpSysPct) elBdpSysPct.textContent = bdpSysPct.toFixed(2) + '%';
+
+        if (elRmSysNom)  elRmSysNom.textContent  = sys.rmEligible ? formatRupiah(nominal * rmSysPct / 100) : '-';
+        if (elBdpSysNom) elBdpSysNom.textContent = formatRupiah(nominal * bdpSysPct / 100);
+
+        // ====== Default final percent if empty ======
+        if (bdpFinalInput && bdpFinalInput.value === '' && nominal > 0 && tenor > 0) {
+            bdpFinalInput.value = bdpSysPct.toFixed(2);
+        }
+        if (sys.rmEligible && rmFinalInput && rmFinalInput.value === '' && nominal > 0 && tenor > 0) {
+            rmFinalInput.value = rmSysPct.toFixed(2);
+        }
+
+        // ====== Ref Mode UI ======
+        if (bdpRefWrapper) {
+            const mode = sys.ref_mode; // none|optional|mandatory
+            const shouldShow = mode !== 'none' && (sys.bdp_ref ?? 0) > 0;
+
+            bdpRefWrapper.classList.toggle('hidden', !shouldShow);
+
+            if (shouldShow) {
+                if (bdpRefToggle) {
+                    if (mode === 'mandatory') {
+                        bdpRefToggle.checked = true;
+                        bdpRefToggle.disabled = true;
+                    } else {
+                        bdpRefToggle.disabled = false;
+
+                        // default: RM -> unchecked, BDP -> checked (sesuai request kamu)
+                        if (jabatan.toUpperCase() === 'BDP') bdpRefToggle.checked = true;
+                        if (jabatan.toUpperCase() === 'RM' && !bdpRefToggle.checked) {
+                            // keep as is (default unchecked)
+                        }
+                    }
+                }
+
+                const enabled = bdpRefToggle ? bdpRefToggle.checked : false;
+
+                if (bdpRefSection) bdpRefSection.classList.toggle('hidden', !enabled);
+
+                if (!enabled) {
+                    if (bdpRefInput) bdpRefInput.value = '';
+                    if (bdpRefNominal) bdpRefNominal.value = '';
+                } else {
+                    // set default percent if empty
+                    const refPct = sys.bdp_ref ?? 0;
+                    if (bdpRefInput && bdpRefInput.value === '' && nominal > 0 && tenor > 0) {
+                        bdpRefInput.value = refPct.toFixed(2);
+                    }
+                    const refFinalPct = parseFloat(bdpRefInput ? (bdpRefInput.value || '0') : '0') || 0;
+                    if (bdpRefNominal) bdpRefNominal.value = formatRupiah(nominal * refFinalPct / 100);
+                }
+            }
+        }
+
+        // ====== Final nominal display ======
+        const rmFinalPct  = sys.rmEligible ? (parseFloat(rmFinalInput ? (rmFinalInput.value || '0') : '0') || 0) : 0;
+        const bdpFinalPct = parseFloat(bdpFinalInput ? (bdpFinalInput.value || '0') : '0') || 0;
+
+        const elRmFinalNom = document.getElementById('komisi-final-rm-nominal');
+        const elBdpFinalNom = document.getElementById('komisi-final-bdp-nominal');
+
+        if (elRmFinalNom)  elRmFinalNom.textContent  = sys.rmEligible ? formatRupiah(nominal * rmFinalPct / 100) : '-';
+        if (elBdpFinalNom) elBdpFinalNom.textContent = formatRupiah(nominal * bdpFinalPct / 100);
+
+        // ====== warning if final != system ======
+        const warn = (sys.rmEligible && round2(rmFinalPct) !== round2(rmSysPct)) || (round2(bdpFinalPct) !== round2(bdpSysPct));
+        setWarning(warn);
+    }
+
+    // listeners
+    nominalEl.addEventListener('input', function() {
+        // Reset final inputs to trigger auto-recalc from system default
+        if (rmFinalInput) rmFinalInput.value = '';
+        if (bdpFinalInput) bdpFinalInput.value = '';
+        if (bdpRefInput) bdpRefInput.value = '';
+        refresh();
     });
+
+    tenorSelectEl.addEventListener('change', function() {
+        // Reset final inputs on tenor change
+        if (rmFinalInput) rmFinalInput.value = '';
+        if (bdpFinalInput) bdpFinalInput.value = '';
+        if (bdpRefInput) bdpRefInput.value = '';
+        refresh();
+    });
+
+    agentEl.addEventListener('change', function() {
+        // reset editable fields when ganti agent, biar mengikuti default baru
+        if (rmFinalInput) rmFinalInput.value = '';
+        if (bdpFinalInput) bdpFinalInput.value = '';
+        if (bdpRefInput) bdpRefInput.value = '';
+        if (bdpRefToggle) bdpRefToggle.checked = false;
+        refresh();
+    });
+
+    if (rmFinalInput)  rmFinalInput.addEventListener('input', refresh);
+    if (bdpFinalInput) bdpFinalInput.addEventListener('input', refresh);
+    if (bdpRefToggle)  bdpRefToggle.addEventListener('change', refresh);
+    if (bdpRefInput)   bdpRefInput.addEventListener('input', refresh);
+
+    refresh();
+});
+
 </script>

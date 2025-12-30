@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Nasabah;
 use App\Models\Agent;
+use App\Support\Audit;
 use Illuminate\Http\Request;
+
 
 class NasabahController extends Controller
 {
@@ -75,7 +77,6 @@ class NasabahController extends Controller
         $this->ensureAdmin();
 
         $data = $request->validate([
-            'kode_nasabah'       => 'required|string|max:50|unique:nasabah,kode_nasabah',
             'id_agent'           => 'required|exists:agents,id',
             'nama'               => 'required|string|max:150',
             'tempat_lahir'       => 'nullable|string|max:100',
@@ -110,8 +111,15 @@ class NasabahController extends Controller
             $data['tanggal_daftar'] = now()->toDateString();
         }
 
-        Nasabah::create($data);
-
+        $nasabah = Nasabah::create($data);
+        Audit::nasabah(
+            $nasabah->id,
+            'create',
+            null,
+            $nasabah->fresh()->toArray(),
+            'Admin membuat nasabah',
+            auth()->id()
+        );
         return redirect()->route('nasabah.index')
             ->with('success', 'Nasabah berhasil ditambahkan.');
     }
@@ -130,7 +138,6 @@ class NasabahController extends Controller
         $this->ensureAdmin();
 
         $data = $request->validate([
-            'kode_nasabah'       => 'required|string|max:50|unique:nasabah,kode_nasabah,' . $nasabah->id,
             'id_agent'           => 'required|exists:agents,id',
             'nama'               => 'required|string|max:150',
             'tempat_lahir'       => 'nullable|string|max:100',
@@ -162,9 +169,17 @@ class NasabahController extends Controller
         if (empty($data['tanggal_daftar'])) {
             $data['tanggal_daftar'] = $nasabah->tanggal_daftar ?? now()->toDateString();
         }
-
+        $oldNasabah = $nasabah->toArray();
         $nasabah->update($data);
-
+        
+        Audit::nasabah(
+            $nasabah->id,
+            'update',
+            $oldNasabah,
+            $nasabah->fresh()->toArray(),
+            'Admin mengubah nasabah',
+            auth()->id()
+        );
         return redirect()->route('nasabah.index')
             ->with('success', 'Nasabah berhasil diperbarui.');
     }

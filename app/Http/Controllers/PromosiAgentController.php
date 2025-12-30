@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Agent;
 use App\Models\PromosiAgent;
+use App\Support\Audit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -81,7 +82,7 @@ class PromosiAgentController extends Controller
         }
 
         // SIMPAN PROMOSI (atasan BDP DIAMBIL OTOMATIS)
-        $item = PromosiAgent::create([
+        $promosi = PromosiAgent::create([
             'id_admin'      => auth()->id(),
             'id_agent'      => $agent->id,
             'jabatan_lama'  => 'RM',
@@ -91,17 +92,15 @@ class PromosiAgentController extends Controller
             'status'        => 'pending',
             'catatan_admin' => $data['catatan_admin'] ?? null,
         ]);
-
-        // LOG
-        // Audit::log(
-        //     'promosi_agent_log',
-        //     'promosi_agent_id',
-        //     $item->id,
-        //     'create',
-        //     null,
-        //     $item->toArray(),
-        //     'Pengajuan promosi RM ke BDP (atasan otomatis)'
-        // );
+        
+        Audit::promosiAgent(
+            $promosi->id,
+            'create',
+            null,
+            $promosi->fresh()->toArray(),
+            'Admin mengajukan promosi RM → BDP',
+            auth()->id()
+        );
 
         return redirect()->route('promosi.index')
             ->with('success', 'Pengajuan promosi berhasil dibuat (pending COA).');
@@ -141,7 +140,8 @@ class PromosiAgentController extends Controller
         if ($agent->jabatan !== 'RM') {
             return back()->withErrors(['id_agent' => 'Hanya agent RM yang bisa diajukan naik.']);
         }
-
+        
+        $oldPromosi = $promosi->toArray();
         $promosi->update([
             'id_agent'      => $data['id_agent'],
             'atasan_bdp_id' => $data['atasan_bdp_id'],
@@ -150,6 +150,15 @@ class PromosiAgentController extends Controller
             'alasan_reject' => null,
             'tanggal_approval' => null,
         ]);
+
+        Audit::promosiAgent(
+            $promosi->id,
+            'update',
+            $oldPromosi,
+            $promosi->fresh()->toArray(),
+            'Admin mengubah pengajuan promosi',
+            auth()->id()
+        );
 
         return redirect()->route('promosi.index')
             ->with('success', 'Pengajuan berhasil diperbarui dan dikirim ulang ke COA.');
@@ -210,12 +219,22 @@ class PromosiAgentController extends Controller
             $agent->atasan_id = null;
 
             $agent->save();
+            $oldPromosi = $promosi->toArray();
 
             $promosi->update([
                 'status'           => 'approved',
                 'alasan_reject'    => null,
                 'tanggal_approval' => now()->toDateString(),
             ]);
+
+            Audit::promosiAgent(
+                $promosi->id,
+                'coa_approve',
+                $oldPromosi,
+                $promosi->fresh()->toArray(),
+                'COA menyetujui promosi RM → BDP',
+                auth()->id()
+            );
         });
 
         return redirect()->route('coa.promosi.index')
@@ -233,12 +252,21 @@ class PromosiAgentController extends Controller
             'alasan_reject' => 'required|string|min:3',
         ]);
 
+        $oldPromosi = $promosi->toArray();
         $promosi->update([
             'status'        => 'rejected',
             'alasan_reject' => $data['alasan_reject'],
             'tanggal_approval' => now()->toDateString(),
         ]);
 
+        Audit::promosiAgent(
+            $promosi->id,
+            'coa_reject',
+            $oldPromosi,
+            $promosi->fresh()->toArray(),
+            $request->catatan ?? 'Ditolak oleh COA',
+            auth()->id()
+        );
         return redirect()->route('coa.promosi.index')
             ->with('success', 'Promosi ditolak dan alasan sudah disimpan.');
     }
